@@ -3,6 +3,7 @@ from django.views.decorators.csrf import csrf_exempt
 from user.models import User
 import json
 from django.http import HttpResponse
+from django.shortcuts import get_object_or_404
 
 @csrf_exempt
 def sign_up(request):
@@ -16,5 +17,10 @@ def sign_up(request):
         cards_id = data.get("cards"),
     )
 
-        return HttpResponse(f"{data.get("name")} is now a member.")
+        return HttpResponse(f"{data.get('name')} is now a member.")
+
+def show_profile(request, user_id : int):
+    user = get_object_or_404(User, id = user_id)
+
+    return render(request, 'user/show_profile.html', user)
 
