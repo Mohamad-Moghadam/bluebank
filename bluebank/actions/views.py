@@ -3,15 +3,18 @@ from actions.models import Card
 import json
 from django.shortcuts import get_object_or_404
 from django.views.decorators.csrf import csrf_exempt
+from django.http import HttpResponse
 
 
 @csrf_exempt
 def deposite(request, card_id : int):
     if request.method == 'POST':
         data = json.loads(request.body)
-        desired_card = get_object_or_404(Card, card_id)
+        desired_card = get_object_or_404(Card, id = card_id)
         desired_card.amount += data.get("amount")
         desired_card.save()
+
+        return HttpResponse(f"deposited {data.get("amount")}")
 
 @csrf_exempt
 def wire_money(request, sender_id : int, reciever_id : int):
