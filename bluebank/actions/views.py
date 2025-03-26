@@ -14,7 +14,7 @@ def deposite(request, card_id : int):
         desired_card.amount += data.get("amount")
         desired_card.save()
 
-        return HttpResponse(f"deposited {data.get("amount")}")
+        return HttpResponse(f"deposited {data.get('amount')}")
 
 @csrf_exempt
 def wire_money(request, sender_id : int, reciever_id : int):
@@ -31,3 +31,8 @@ def wire_money(request, sender_id : int, reciever_id : int):
 
             sender.save()
             reciever.save()
+
+            return HttpResponse(f"transaction completed.")
+        
+        else:
+            return HttpResponse(f"transaction failed. not enough money. ")
