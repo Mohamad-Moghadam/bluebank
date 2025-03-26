@@ -36,3 +36,8 @@ def wire_money(request, sender_id : int, reciever_id : int):
         
         else:
             return HttpResponse(f"transaction failed. not enough money. ")
+
+def show_balance(request, card_id):
+    desired_card = get_object_or_404(Card, id= card_id)
+
+    return HttpResponse(f"you currently have {desired_card.amount}")
