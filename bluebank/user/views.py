@@ -13,8 +13,7 @@ def sign_up(request):
         User.objects.create(
         name = data.get("name"),
         last_name = data.get("last_name"),
-        user_name = data.get("user_name"),
-        cards_id = data.get("cards"),
+        user_name = data.get("user_name")
     )
 
         return HttpResponse(f"{data.get('name')} is now a member.")
@@ -22,5 +21,14 @@ def sign_up(request):
 def show_profile(request, user_id : int):
     user = get_object_or_404(User, id = user_id)
 
-    return render(request, 'user/show_profile.html', user)
+    cards = user.cards.all() if hasattr(user, "cards") else []
+
+    context = {
+        "name": user.name,
+        "last_name": user.last_name,
+        "user_name": user.user_name,
+        "cards": cards
+    }
+
+    return render(request, 'user/show_prof.html', context)
 
