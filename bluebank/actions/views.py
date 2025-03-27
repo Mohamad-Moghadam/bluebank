@@ -41,12 +41,13 @@ def show_balance(request, card_id : int):
     desired_card = get_object_or_404(Card, id= card_id)
     return HttpResponse(f"you currently have {desired_card.amount}")
 
+@csrf_exempt
 def get_loan(request, card_id: int):
     if request.method == 'POST':
         desired_card = get_object_or_404(Card, id = card_id)
         data = json.loads(request.body)
         
-        if data.get('amount') > 10000000:
+        if data.get('amount') > 10000000 and data.get('amount') <= 100000000:
             if not data.get('guarantor1'):
                 raise TypeError(f"You should have a guarantor! ")
             
@@ -58,11 +59,12 @@ def get_loan(request, card_id: int):
                 )
 
                 desired_card.amount += data.get('amount')
+                desired_card.save()
 
                 return HttpResponse(f"loan granted. your balance is: {desired_card.amount}")
             
         elif data.get('amount') > 100000000:
-            if not data.get('guarantor') and not data.get('guarantor'):
+            if not data.get('guarantor1') and not data.get('guarantor2'):
                 raise TypeError(f"You're getting too much money mate! go get someone! ")
             
             else:
@@ -73,8 +75,9 @@ def get_loan(request, card_id: int):
                 )
 
                 desired_card.amount += data.get('amount')
+                desired_card.save()
 
-                return HttpResponse(f"loan granted. your balance is: {desired_card.amount}")
+                return HttpResponse(f"be careful with that money. your balance is: {desired_card.amount}")
             
         else:
             Loan.objects.create(
@@ -84,6 +87,7 @@ def get_loan(request, card_id: int):
                 )
             
             desired_card.amount += data.get('amount')
+            desired_card.save()
 
             return HttpResponse(f"you're poor as fuck mate! just get the money. your balance is: {desired_card.amount}")
 
