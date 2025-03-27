@@ -91,4 +91,25 @@ def get_loan(request, card_id: int):
 
             return HttpResponse(f"you're poor as fuck mate! just get the money. your balance is: {desired_card.amount}")
 
+@csrf_exempt
+def pay_installation(request, loan_id: int, card_id:int):
+    if request.method == 'POST':
+        desired_loan = get_object_or_404(Loan, id= loan_id)
+        desired_card = get_object_or_404(Card, id= card_id)
+        amount_to_pay = (desired_loan.amount // desired_loan.number_of_installation)
+
+        if amount_to_pay <= desired_card.amount:
+            desired_card.amount -= amount_to_pay
+            desired_loan.amount -= amount_to_pay
+            desired_loan.number_of_installation = (desired_loan.number_of_installation - 1)
+
+            desired_card.save()
+            desired_loan.save()
+
+            return HttpResponse(f"Thanks mate! your balance is: {desired_card.amount}")
+
+        else:
+            raise TypeError(f"WHAT THE HELL DID U DO WITH THAT MONEY? WHEN ARE YOU GONNA PAY? YOU HAVE NO MONEY TO PAY THE INSTALLATIONS! ")
+
+
 
